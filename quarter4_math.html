@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Questify - Mathematics Quiz Q4</title>
+    <link href='https://fonts.googleapis.com/css?family=Bagel+Fat+One' rel='stylesheet'>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        /* ...existing code for style, copy from previous math quarters... */
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(180deg, #9B7EBD, #3B1E54); /* Dark purple background */
+            color: #EEEEEE;
+            display: flex;
+            flex-direction: column; /* Allow content to stack vertically */
+            min-height: 100vh;
+        }
+
+         .top-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            background-color: #3D1860; /* Same as body background */
+            color: white;
+        }
+
+       .top-nav .logo {
+            font-family: 'Bagel Fat One', cursive;
+            font-size: 35px;
+            font-weight: 100;
+            color: #F5EDF7;
+            display: flex;
+            align-items: center;
+        }
+
+        .top-nav .logo i {
+            margin-right: 10px;
+            font-size: 28px;
+        }
+
+        .top-nav .user-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .top-nav .user-info .notification-icon {
+            font-size: 24px;
+            margin-right: 20px;
+            cursor: pointer;
+            position: relative;
+        }
+
+       .top-nav .user-info .notification-icon .badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: red;
+            color: #F5EDF7;
+            border-radius: 50%;
+            padding: 3px 6px;
+            font-size: 10px;
+        }
+
+        .top-nav .user-info .email {
+            font-size: 16px;
+        }
+
+        .content-area {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+          .quiz-container {
+            background-color: #3D1860; /* Slightly lighter purple for the container */
+            border-radius: 15px;
+            padding: 30px 40px; /* Adjusted padding */
+            width: 90%;
+            max-width: 700px; /* Increased max-width */
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); /* Stronger shadow */
+            color: #F5EDF7;
+            position: relative;
+        }
+
+       .quiz-title {  
+            font-size: 30px;
+            font-family: 'Bagel Fat One', cursive;
+            color: #F5EDF7;
+            margin-bottom: 30px;
+            font-weight: 100;
+            text-transform: uppercase;
+            justify-content: center;
+            display: flex;
+        }
+
+        .timer-container {
+            font-size: 1.2em;
+            color: #3D1860;
+            background: #D4BEE4;
+            border-radius: 8px;
+            padding: 8px 24px;
+            margin-bottom: 22px;
+            display: inline-block;
+            font-weight: bold;
+            letter-spacing: 1px;
+            box-shadow: 0 2px 8px rgba(59, 30, 84, 0.08);
+            align-items: center;
+        }
+
+        .quiz-header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+         .quiz-header-top .question-count {
+            font-size: 1.2em;
+            color: white; /* Light purple for question count */
+        }
+
+       .quiz-header-top .score {
+            font-size: 1.2em;
+            color: white; /* Light purple for score */
+        }
+
+
+      .progress-bar-container {
+            width: 100%;
+            background-color: white; /* Darker purple for progress bar background */
+            border-radius: 5px;
+            height: 10px;
+            margin-bottom: 30px;
+        }
+      
+        .progress-bar {
+            height: 100%;
+            background-color: #D4BEE4; /* Light purple for progress bar fill */
+            border-radius: 5px;
+            width: 0%; /* Will be controlled by JS */
+            transition: width 0.3s ease-in-out;
+        }
+
+         .question-text {
+            font-size: 1.6em; /* Larger question text */
+            margin-bottom: 30px;
+            color: white;
+            line-height: 1.5; /* Improve readability */
+        }
+
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+        }
+
+         .option {
+            background-color: #9B7EBD; /* Darker purple for options */
+            padding: 18px 25px; /* More padding for options */
+            margin: 10px 0;
+            border-radius: 10px; /* More rounded corners for options */
+            cursor: pointer;
+            transition: background-color 0.3s, border-color 0.3s;
+            font-size: 1.1em;
+            color: white;
+            display: flex;
+            align-items: center;
+            border: 2px solid transparent; /* Transparent border for default state */
+        }
+
+          .option:hover {
+            background-color: #3D1860; /* Slightly lighter on hover */
+        }
+
+
+        .option.selected {
+            background-color: #D4BEE4; /* Highlight selected option */
+            color: #3b285f; /* Dark text for selected option */
+            border-color: #D4BEE4; /* Border to match selected background */
+        }
+
+       .option.correct {
+            background-color: #4CAF50; /* Green for correct answer */
+            color: white;
+        }
+
+
+        .option.incorrect {
+            background-color: #f44336; /* Red for incorrect answer */
+            color: white;
+        }
+
+        /* Hide control buttons as per image */
+        .controls-container {
+            display: none;
+        }
+
+        /* Hide score container as per image */
+        .score-container {
+            display: none;
+        }
+
+        .next-quarter-btn {
+            display: inline-block;
+            margin-top: 25px;
+            padding: 15px 30px;
+            background-color: #674188;
+            color: #F7EFE5;
+            border-radius: 10px;
+            font-size: 20px;
+            font-family: 'Bagel Fat One', cursive;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s, transform 0.2s;
+            margin-right: 15px;
+        }
+        .next-quarter-btn:hover {
+            background-color: #C3ACD0;
+            color: #674188;
+            transform: translateY(-2px);
+        }
+        .back-quarter-btn {
+            display: inline-block;
+            margin-top: 25px;
+            padding: 15px 30px;
+            background-color: #3D1860;
+            color: #F7EFE5;
+            border-radius: 10px;
+            font-size: 18px;
+            font-family: 'Bagel Fat One', cursive;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        .back-quarter-btn:hover {
+            background-color: #9B7EBD;
+            color: #3D1860;
+            transform: translateY(-2px);
+        }
+        .final-btns {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .quiz-completed-container {
+            background: #2d1740;
+            border-radius: 18px;
+            padding: 40px 30px 30px 30px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+            text-align: center;
+            color: #F5EDF7;
+            margin-top: 30px;
+            margin-bottom: 30px;
+            max-width: 450px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .completed-title {
+            font-size: 2em;
+            color: #D4BEE4;
+            margin-bottom: 18px;
+            font-family: 'Bagel Fat One', cursive;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .completed-title i {
+            color: #4CAF50;
+        }
+        .completed-score, .completed-time {
+            font-size: 1.3em;
+            margin-bottom: 12px;
+        }
+        .completed-score span, .completed-time span {
+            color: #D4BEE4;
+            font-weight: bold;
+        }
+        .final-btns {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 25px;
+        }
+        .next-quarter-btn {
+            display: inline-block;
+            padding: 15px 30px;
+            background-color: #674188;
+            color: #F7EFE5;
+            border-radius: 10px;
+            font-size: 20px;
+            font-family: 'Bagel Fat One', cursive;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s, transform 0.2s;
+            margin-right: 0;
+        }
+        .next-quarter-btn:hover {
+            background-color: #C3ACD0;
+            color: #674188;
+            transform: translateY(-2px);
+        }
+        .back-quarter-btn {
+            display: inline-block;
+            padding: 15px 30px;
+            background-color: #3D1860;
+            color: #F7EFE5;
+            border-radius: 10px;
+            font-size: 18px;
+            font-family: 'Bagel Fat One', cursive;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        .back-quarter-btn:hover {
+            background-color: #9B7EBD;
+            color: #3D1860;
+            transform: translateY(-2px);
+        }
+        .next-quarter-btn,
+        .back-quarter-btn {
+            font-family: 'Comic Sans MS', 'Comic Sans', cursive, Arial, sans-serif !important;
+            letter-spacing: 1px;
+            font-size: 20px;
+}
+    </style>
+</head>
+<body>
+    <div class="top-nav">
+        <div class="logo">
+            <i class="fas fa-hat-wizard"></i> Questify
+        </div>
+        <div class="user-info">
+            <div class="notification-icon">
+                <i class="fas fa-bell"></i>
+                <span class="badge"></span>
+            </div>
+            <div class="email">ced@gmail.com</div>
+        </div>
+    </div>
+    <div class="content-area">
+        <div class="quiz-container">
+            <div class="quiz-title">Mathematics Quiz - Quarter 2</div>
+            <div class="quiz-header-top">
+                <span class="question-count">Question 1 of 10</span>
+                <span class="score">Score : 0</span>
+                <div class="timer-container" id="timer">Time: 00:00</div>
+            </div>
+            <div class="progress-bar-container">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+            <div id="question-area"></div>
+        </div>
+    </div>
+    <script>
+        // ...existing code...
+        const quizContainer = document.querySelector('.quiz-container');
+        const questionArea = document.getElementById('question-area');
+        const scoreDisplay = document.querySelector('.score');
+        const questionCountDisplay = document.querySelector('.question-count');
+        const progressBar = document.getElementById('progressBar');
+        const notificationBadge = document.querySelector('.notification-icon .badge');
+        const timerDisplay = document.getElementById('timer');
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let selectedAnswerIndex = null;
+        let timerInterval = null;
+        let elapsedSeconds = 0;
+
+        const questions = [
+            { question: "What is the median of 2, 4, 6?", options: ["2", "4", "6", "None"], correctAnswer: "4" },
+            { question: "What is 3/5 as a decimal?", options: ["0.3", "0.5", "0.6", "0.8"], correctAnswer: "0.6" },
+            { question: "What is 100 - 37?", options: ["63", "67", "73", "77"], correctAnswer: "63" },
+            { question: "What is the value of 10²?", options: ["10", "20", "100", "1000"], correctAnswer: "100" },
+            { question: "What is the largest two-digit number?", options: ["90", "91", "99", "100"], correctAnswer: "99" },
+            { question: "What is 1/2 + 1/4?", options: ["1/4", "1/2", "3/4", "1"], correctAnswer: "3/4" },
+            { question: "What is the product of 5 and 6?", options: ["11", "30", "56", "65"], correctAnswer: "30" },
+            { question: "What is 7 + 8?", options: ["13", "14", "15", "16"], correctAnswer: "15" },
+            { question: "What is the next odd number after 21?", options: ["22", "23", "24", "25"], correctAnswer: "23" },
+            { question: "What is 50% of 60?", options: ["20", "30", "40", "50"], correctAnswer: "30" }
+        ];
+
+       function displayQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            questionArea.innerHTML = `
+                <p class="question-text">${currentQuestion.question}</p>
+                <div class="options-container">
+                    ${currentQuestion.options.map((option, index) => `
+                        <div class="option" data-index="${index}">${String.fromCharCode(65 + index)}. ${option}</div>
+                    `).join('')}
+                </div>
+            `;
+
+            const options = document.querySelectorAll('.option');
+            options.forEach(option => {
+                option.addEventListener('click', handleAnswer);
+            });
+
+            updateQuizHeader();
+            updateProgressBar();
+            selectedAnswerIndex = null;
+        }
+
+        function handleAnswer(event) {
+            const selectedOption = event.target;
+            const answerIndex = parseInt(selectedOption.dataset.index);
+            const currentQuestion = questions[currentQuestionIndex];
+
+            if (selectedAnswerIndex !== null) {
+                return;
+            }
+
+            selectedAnswerIndex = answerIndex;
+
+            document.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
+            selectedOption.classList.add('selected');
+
+            if (currentQuestion.options[answerIndex] === currentQuestion.correctAnswer) {
+                score++;
+                selectedOption.classList.add('correct');
+            } else {
+                selectedOption.classList.add('incorrect');
+                const correctOptionElement = Array.from(document.querySelectorAll('.option')).find(opt =>
+                    currentQuestion.options[parseInt(opt.dataset.index)] === currentQuestion.correctAnswer
+                );
+                if (correctOptionElement) {
+                    correctOptionElement.classList.add('correct');
+                }
+            }
+
+            updateScore();
+
+            document.querySelectorAll('.option').forEach(option => {
+                option.style.pointerEvents = 'none';
+            });
+
+            setTimeout(() => {
+                if (currentQuestionIndex < questions.length - 1) {
+                    currentQuestionIndex++;
+                    displayQuestion();
+                } else {
+                    showFinalScore();
+                }
+            }, 1000);
+        }
+
+        function updateQuizHeader() {
+            questionCountDisplay.textContent = `Question ${currentQuestionIndex + 1} of ${questions.length}`;
+            scoreDisplay.textContent = `Score : ${score}`;
+        }
+
+        function updateScore() {
+            scoreDisplay.textContent = `Score : ${score}`;
+        }
+
+        function updateProgressBar() {
+            const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
+            progressBar.style.width = `${progress}%`;
+        }
+
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                elapsedSeconds++;
+                timerDisplay.textContent = 'Time: ' + formatTime(elapsedSeconds);
+            }, 1000);
+        }
+
+        function stopTimer() {
+            clearInterval(timerInterval);
+        }
+
+        function formatTime(totalSeconds) {
+            const min = String(Math.floor(totalSeconds / 60)).padStart(2, '0');
+            const sec = String(totalSeconds % 60).padStart(2, '0');
+            return `${min}:${sec}`;
+        }
+
+        function showFinalScore() {
+            stopTimer();
+            // Get current user info
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            const userEmail = currentUser ? currentUser.email : 'Anonymous';
+            
+            // Store quiz results with user-specific key
+            localStorage.setItem(`math_quarter4_completed_${userEmail}`, 'true');
+            localStorage.setItem(`math_quarter4_score_${userEmail}`, `${score}/${questions.length}`);
+            localStorage.setItem(`math_quarter4_time_${userEmail}`, formatTime(elapsedSeconds));
+            
+            // Store result in leaderboard data
+            const leaderboardData = JSON.parse(localStorage.getItem('math_leaderboard') || '[]');
+            leaderboardData.push({
+                studentName: userEmail,
+                subject: 'Mathematics',
+                quarter: 4,
+                score: Math.round((score / questions.length) * 100),
+                time: elapsedSeconds,
+                date: new Date().toISOString()
+            });
+            localStorage.setItem('math_leaderboard', JSON.stringify(leaderboardData));
+
+            // Remove the quiz container and show only the completed message
+            document.querySelector('.quiz-container').remove();
+
+            // Create and insert the completed message at the center of the page
+            const completedDiv = document.createElement('div');
+            completedDiv.className = 'quiz-completed-container';
+            completedDiv.innerHTML = `
+                <h2 class="completed-title"><i class="fas fa-check-circle"></i> Quiz Completed!</h2>
+                <p class="completed-score">Your final score is: <span>${score} / ${questions.length}</span></p>
+                <p class="completed-time"><strong>Time taken:</strong> <span>${formatTime(elapsedSeconds)}</span></p>
+                <div class="final-btns">
+                    <a href="summative_math.html" class="next-quarter-btn" id="nextQuarterBtn">Next: Summative Test</a>
+                    <a href="mathematics_quarters.html" class="back-quarter-btn" id="backQuarterBtn"><i class="fas fa-arrow-left"></i> Back to Math Quarters</a>
+                </div>
+            `;
+            document.querySelector('.content-area').appendChild(completedDiv);
+        }
+
+        // Show user email if signed in
+        const emailDisplay = document.querySelector('.user-info .email');
+        const signedInEmail = localStorage.getItem('user_email');
+        if (signedInEmail) {
+            emailDisplay.textContent = signedInEmail;
+        } else {
+            emailDisplay.textContent = "Not signed in";
+        }
+
+        // Show number of requests in the notification badge
+        const requestCount = parseInt(localStorage.getItem('profile_requests') || '0', 10);
+        if (requestCount > 0) {
+            notificationBadge.style.display = 'inline';
+            notificationBadge.textContent = requestCount;
+        } else {
+            notificationBadge.style.display = 'none';
+        }
+
+        // Update the check for quiz completion to be user-specific
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            const userEmail = currentUser ? currentUser.email : 'Anonymous';
+            const isCompleted = localStorage.getItem(`math_quarter4_completed_${userEmail}`) === 'true';
+            
+            if (isCompleted) {
+                document.querySelector('.quiz-container').remove();
+                document.querySelector('.completed-message').style.display = 'block';
+            } else {
+                document.querySelector('.completed-message').style.display = 'none';
+            }
+        });
+
+        displayQuestion();
+        startTimer();
+    </script>
+</body>
+</html>

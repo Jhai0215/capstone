@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Management</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            display: flex;
+        }
+        .sidebar {
+            width: 250px;
+            background-color: #4B0082;
+            color: white;
+            padding: 20px;
+            height: 100vh;
+        }
+        .sidebar h2 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+        .sidebar ul li {
+            margin: 15px 0;
+        }
+        .sidebar ul li a {
+            color: white;
+            text-decoration: none;
+        }
+        .main {
+            flex: 1;
+            padding: 20px;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header h1 {
+            margin: 0;
+        }
+        .create-btn {
+            background-color: #6A5ACD;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+        }
+        .quiz-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .quiz-table th, .quiz-table td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        .quiz-table th {
+            background-color: #f4f4f4;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+            padding-top: 60px;
+        }
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+            border-radius: 5px;
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .modal-header h2 {
+            margin: 0;
+        }
+        .modal-header .close {
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .modal-header .close:hover {
+            color: black;
+        }
+        .modal-body {
+            margin-top: 10px;
+        }
+        .modal-body input,
+        .modal-body select,
+        .modal-body textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .questions-list {
+            margin-top: 10px;
+        }
+        .question-item {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+        }
+        .question-item input[type="text"] {
+            flex: 1;
+            margin-right: 10px;
+        }
+        .removeQuestionBtn {
+            background-color: red;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+        }
+        .modal-footer button {
+            background-color: #6A5ACD;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+        }
+        .action-icons {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .action-icons i {
+            cursor: pointer;
+            font-size: 18px;
+        }
+        .visible {
+            color: #6A5ACD; /* Blue for visible */
+        }
+        .invisible {
+            color: #ccc; /* Gray for invisible */
+        }
+        .edit-icon {
+            color: #6A5ACD; /* Blue for edit */
+        }
+        .delete-icon {
+            color: red; /* Red for delete */
+        }
+        @media (max-width: 600px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+            }
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .create-btn {
+                width: 100%;
+                margin-top: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="sidebar">
+    <h2>Questify Admin</h2>
+    <p>Administrator</p>
+    <ul>
+        <li><a href="#">Dashboard</a></li>
+        <li><a href="#">Quizzes</a></li>
+        <li><a href="#">Performance Stats</a></li>
+        <li><a href="#">Retake Requests</a></li>
+        <li><a href="#">Settings</a></li>
+    </ul>
+</div>
+
+<div class="main">
+    <div class="header">
+        <h1>Quiz Management</h1>
+        <button class="create-btn" id="createQuizBtn">+ Create Quiz</button>
+    </div>
+    
+    <input type="text" placeholder="Search quizzes..." id="search" style="margin-top: 20px; padding: 10px; width: 100%;">
+
+    <table class="quiz-table">
+        <thead>
+            <tr>
+                <th>Quiz</th>
+                <th>Subject</th>
+                <th>Difficulty</th>
+                <th>Questions</th>
+                <th>Created At</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="quizList">
+            <tr>
+                <td>English Grammar Basics</td>
+                <td>English</td>
+                <td>Easy</td>
+                <td>5</td>
+                <td>5/15/2022</td>
+                <td class="action-icons">
+                    <i class="fas fa-eye visible" onclick="toggleVisibility(this)"></i>
+                    <i class="fas fa-edit edit-icon" onclick="editQuiz(this)"></i>
+                    <i class="fas fa-trash delete-icon" onclick="deleteQuiz(this)"></i>
+                </td>
+            </tr>
+            <tr>
+                <td>Basic Algebra</td>
+                <td>Mathematics</td>
+                <td>Medium</td>
+                <td>10</td>
+                <td>6/10/2022</td>
+                <td class="action-icons">
+                    <i class="fas fa-eye visible" onclick="toggleVisibility(this)"></i>
+                    <i class="fas fa-edit edit-icon" onclick="editQuiz(this)"></i>
+                    <i class="fas fa-trash delete-icon" onclick="deleteQuiz(this)"></i>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- Modal for Creating Quiz -->
+<div id="createQuizModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Create New Quiz</h2>
+            <span class="close" id="closeModal">&times;</span>
+        </div>
+        <div class="modal-body">
+            <input type="text" placeholder="Enter quiz title" id="quizTitle" required>
+            <textarea placeholder="Enter quiz description" id="quizDescription" rows="3"></textarea>
+            <select id="quizSubject" required>
+                <option value="English">English</option>
+                <option value="Mathematics">Mathematics</option>
+                <option value="Science">Science</option>
+            </select>
+            <select id="quizDifficulty" required>
+                <option value="Easy">Easy</option>
+                <option value="Medium">Medium</option>
+                <option value="Hard">Hard</option>
+            </select>
+            <input type="number" placeholder="Time Limit (minutes)" id="quizTimeLimit" required>
+            <div class="questions-list" id="questionsList">
+                <div class="question-item">
+                    <input type="text" placeholder="Question Text" />
+                    <span class="removeQuestionBtn">❌</span>
+                </div>
+            </div>
+            <span class="addQuestion" id="addQuestionBtn">+ Add Question</span>
+        </div>
+        <div class="modal-footer">
+            <button id="createQuiz">Create Quiz</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for Editing Quiz -->
+<div id="editQuizModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Edit Quiz</h2>
+            <span class="close" id="closeEditModal">&times;</span>
+        </div>
+        <div class="modal-body">
+            <input type="text" placeholder="Enter quiz title" id="editQuizTitle" required>
+            <textarea placeholder="Enter quiz description" id="editQuizDescription" rows="3"></textarea>
+            <select id="editQuizSubject" required>
+                <option value="English">English</option>
+                <option value="Mathematics">Mathematics</option>
+                <option value="Science">Science</option>
+            </select>
+            <select id="editQuizDifficulty" required>
+                <option value="Easy">Easy</option>
+                <option value="Medium">Medium</option>
+                <option value="Hard">Hard</option>
+            </select>
+            <input type="number" placeholder="Time Limit (minutes)" id="editQuizTimeLimit" required>
+            <div class="questions-list" id="editQuestionsList">
+                <div class="question-item">
+                    <input type="text" placeholder="Sample Question 1" />
+                    <span class="removeQuestionBtn">❌</span>
+                </div>
+                <div class="question-item">
+                    <input type="text" placeholder="Sample Question 2" />
+                    <span class="removeQuestionBtn">❌</span>
+                </div>
+            </div>
+            <span class="addQuestion" id="editAddQuestionBtn">+ Add Question</span>
+        </div>
+        <div class="modal-footer">
+            <button id="saveQuiz">Save Changes</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('createQuizBtn').onclick = function() {
+        document.getElementById('createQuizModal').style.display = 'block';
+    }
+
+    document.getElementById('closeModal').onclick = function() {
+        document.getElementById('createQuizModal').style.display = 'none';
+    }
+
+    document.getElementById('addQuestionBtn').onclick = function() {
+        const questionsList = document.getElementById('questionsList');
+        const questionItem = document.createElement('div');
+        questionItem.className = 'question-item';
+        questionItem.innerHTML = `
+            <input type="text" placeholder="Question Text" />
+            <span class="removeQuestionBtn">❌</span>
+        `;
+        questionsList.appendChild(questionItem);
+
+        questionItem.querySelector('.removeQuestionBtn').onclick = function() {
+            questionsList.removeChild(questionItem);
+        }
+    }
+
+    document.getElementById('createQuiz').onclick = function() {
+        const title = document.getElementById('quizTitle').value;
+        const description = document.getElementById('quizDescription').value;
+        const subject = document.getElementById('quizSubject').value;
+        const difficulty = document.getElementById('quizDifficulty').value;
+        const timeLimit = document.getElementById('quizTimeLimit').value;
+
+        const questions = Array.from(document.querySelectorAll('#questionsList .question-item')).map(q => {
+            return q.querySelector('input[type="text"]').value;
+        });
+
+        const quizList = document.getElementById('quizList');
+        const newRow = document.createElement('tr');
+        newRow.innerHTML = `
+            <td>${title}</td>
+            <td>${subject}</td>
+            <td>${difficulty}</td>
+            <td>${questions.length}</td>
+            <td>${new Date().toLocaleDateString()}</td>
+            <td class="action-icons">
+                <i class="fas fa-eye visible" onclick="toggleVisibility(this)"></i>
+                <i class="fas fa-edit edit-icon" onclick="editQuiz(this)"></i>
+                <i class="fas fa-trash delete-icon" onclick="deleteQuiz(this)"></i>
+            </td>
+        `;
+        quizList.appendChild(newRow);
+        document.getElementById('createQuizModal').style.display = 'none';
+        clearCreateInputs();
+    }
+
+    function clearCreateInputs() {
+        document.getElementById('quizTitle').value = '';
+        document.getElementById('quizDescription').value = '';
+        document.getElementById('quizSubject').value = 'English';
+        document.getElementById('quizDifficulty').value = 'Easy';
+        document.getElementById('quizTimeLimit').value = '';
+        document.getElementById('questionsList').innerHTML = '';
+    }
+
+    function toggleVisibility(icon) {
+        if (icon.classList.contains('visible')) {
+            icon.classList.remove('visible');
+            icon.classList.add('invisible');
+        } else {
+            icon.classList.remove('invisible');
+            icon.classList.add('visible');
+        }
+    }
+
+    function editQuiz(icon) {
+        const row = icon.closest('tr');
+        const title = row.cells[0].innerText;
+        const description = "Sample description"; // Placeholder for actual description
+        const subject = row.cells[1].innerText;
+        const difficulty = row.cells[2].innerText;
+        const timeLimit = 15; // Placeholder for actual time limit
+
+        document.getElementById('editQuizTitle').value = title;
+        document.getElementById('editQuizDescription').value = description;
+        document.getElementById('editQuizSubject').value = subject;
+        document.getElementById('editQuizDifficulty').value = difficulty;
+        document.getElementById('editQuizTimeLimit').value = timeLimit;
+
+        const editQuestionsList = document.getElementById('editQuestionsList');
+        editQuestionsList.innerHTML = ''; // Clear existing questions
+
+        // Sample questions for demonstration
+        const sampleQuestions = ["Sample Question 1", "Sample Question 2"];
+        sampleQuestions.forEach(q => {
+            const questionItem = document.createElement('div');
+            questionItem.className = 'question-item';
+            questionItem.innerHTML = `
+                <input type="text" value="${q}" />
+                <span class="removeQuestionBtn">❌</span>
+            `;
+            editQuestionsList.appendChild(questionItem);
+            questionItem.querySelector('.removeQuestionBtn').onclick = function() {
+                editQuestionsList.removeChild(questionItem);
+            };
+        });
+
+        document.getElementById('editQuizModal').style.display = 'block';
+    }
+
+    document.getElementById('closeEditModal').onclick = function() {
+        document.getElementById('editQuizModal').style.display = 'none';
+    }
+
+    document.getElementById('editAddQuestionBtn').onclick = function() {
+        const editQuestionsList = document.getElementById('editQuestionsList');
+        const questionItem = document.createElement('div');
+        questionItem.className = 'question-item';
+        questionItem.innerHTML = `
+            <input type="text" placeholder="New Question Text" />
+            <span class="removeQuestionBtn">❌</span>
+        `;
+        editQuestionsList.appendChild(questionItem);
+
+        questionItem.querySelector('.removeQuestionBtn').onclick = function() {
+            editQuestionsList.removeChild(questionItem);
+        }
+    }
+
+    document.getElementById('saveQuiz').onclick = function() {
+        // Implement saving logic here
+        document.getElementById('editQuizModal').style.display = 'none';
+    }
+
+    function deleteQuiz(icon) {
+        const row = icon.closest('tr');
+        row.remove();
+    }
+
+    document.getElementById('search').addEventListener('input', function() {
+        const filter = this.value.toLowerCase();
+        const rows = document.querySelectorAll('#quizList tr');
+        rows.forEach(row => {
+            const text = row.textContent.toLowerCase();
+            row.style.display = text.includes(filter) ? '' : 'none';
+        });
+    });
+</script>
+
+</body>
+</html>

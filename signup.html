@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link href='https://fonts.googleapis.com/css?family=Bagel Fat One' rel='stylesheet'>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Questify</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(180deg, #4B0082, #800080);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: white;
+            background-image: url("bg3.png");
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.952);
+            border-radius: 10px;
+            padding: 20px;
+            width: 500px;
+            height: 400px;
+            text-align: center;
+            box-shadow: 0 8px 30px rgb(0, 0, 0);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            color: #800080;
+            text-align: center;
+        }
+        
+        p {
+            margin-top: 80px;
+            color: #555;
+            font-size: 25px;
+            text-align: center;
+            margin-right: 90px;
+        }
+        
+        
+        .button {
+            display: inline-block;
+            padding: 15px 30px;
+            background-color: #800080; /* Default button color */
+            color: white;
+            text-decoration: none;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 15px;
+            margin-top: 18px;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+        }
+        
+        .button:hover {
+            background-color: #6A006A; /* Hover color */
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        
+        .sign-in {
+            background-color: #7a2c9e; /* Distinct color for Sign In */
+            color: white;
+            width: 100%;
+        }
+        
+        .sign-in:hover {
+            background-color: #6b2a8a;
+        }
+        .sign-up{
+            background-color: #7a2c9e; /* Distinct color for Sign In */
+            color: white;
+            width: 100%;
+        }
+        
+        .sign-up:hover {
+            background-color: #6b2a8a;
+        }
+        
+        
+        .links {
+            display: inline-block;
+            margin-top: 50px;
+            margin-left: 100px;
+            font-weight: 600;
+            animation: pulse 2s infinite;
+            text-align: center;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+            }
+        
+        .links a {
+            color: #766161;
+            text-decoration: none;
+            position: relative;
+            padding: 0 5px;
+            transition: color 0.3s ease;
+        }
+        
+        .links a:hover {
+            color: #6A006A; /* Change to a darker color on hover */
+        }
+        
+        .links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 1px;
+            bottom: -2px;
+            left: 0;
+            background-color: #766161;
+            transition: width 0.3s ease;
+        }
+        
+        .links a:hover::after {
+            width: 100%;
+        }
+        .form-container {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 100px rgb(0, 0, 0);
+            padding: 20px;
+            width: 400px;
+            margin: auto;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        
+        
+        
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        select {
+            width: 90%;
+            padding: 10px 10px;
+            margin: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        
+        .footer {
+            margin-top: 10px;
+            font-size: 12px;
+        }
+        
+        .footer a {
+            color: #7a2c9e;
+            text-decoration: none;
+        }
+        
+        .label {
+            color: black;
+            display: block;
+            margin-top: 10px;
+        }
+        .password-strength {
+            font-size: 14px;
+            color: #555;
+            margin-top: 5px;
+            font-family: 'Arial', sans-serif;
+        }
+        .dashboard-container {
+            display: flex;
+            height: 100vh;
+        }
+        
+        .sidebar {
+            width: 200px;
+            padding: 20px;
+            color: white;
+        }
+        
+        .sidebar h2 {
+            text-align: center;
+        }
+        
+        .sidebar ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        
+        .sidebar ul li {
+            margin: 15px 0;
+        }
+        
+        .sidebar ul li a {
+            color: white;
+            text-decoration: none;
+        }
+        
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            background-color: #f4f4f4;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .main-content h1 {
+            color: #800080;
+        }
+        
+        .start-quiz {
+            background-color: #800080;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        .start-quiz:hover {
+            background-color: #6A006A;
+        }
+       .toggle-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 20px;
+            color: black;
+        }
+        
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+            margin-right: 10px;
+        }
+        
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #000000;
+            border-radius: 34px;
+            transition: background-color 0.4s;
+        }
+        
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            border-radius: 50%;
+            transition: transform 0.4s;
+        }
+        
+        input:checked + .slider {
+            background-color: #7a2c9e;
+        }
+        
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+        
+    </style>
+</head>
+<body>
+    
+    <!-- Sign In Page -->
+    <div id="loginContainer" class="form-container">
+        <h1>Sign In to Questify</h1>
+        <form id="loginForm" onsubmit="signIn(event)">
+            <label class="label" for="email">Email</label>
+            <input type="email" id="email" placeholder="Email" required>
+            <p id="emailError" class="error-message" style="color: red; display: none;"></p>
+
+            <label class="label" for="password">Password</label>
+            <input type="password" id="password" placeholder="Password" required>
+            <p id="passwordError" class="error-message" style="color: red; display: none;"></p>
+
+            <button class="button sign-in" type="submit">Sign In</button> 
+            <p id="signupPrompt" class="footer links">Don't have an account? <a href="#" onclick="toggleForms()">Sign Up</a></p>
+
+            <div class="toggle-container">
+                <label class="switch">
+                    <input type="checkbox" id="toggleSwitchLogin" onchange="toggleLabel('login')">
+                    <span class="slider"></span>
+                </label>
+                <span id="toggleLabelLogin">Student</span>
+            </div>
+
+        </form>
+    </div>
+
+    <!-- Sign Up Page -->
+    <div id="signupContainer" class="form-container" style="display:none;">
+        <h1>Create Account</h1>
+        <form id="signupForm">
+            <label class="label" for="username">Username</label>
+            <input type="text" id="username" placeholder="Username" required>
+
+            <label class="label" for="signupEmail">Email</label>
+            <input type="email" id="signupEmail" placeholder="Email" required>
+
+            <label class="label" for="signupPassword">Password</label>
+            <input type="password" id="signupPassword" placeholder="Password" required>
+            <p id="passwordStrength" class="password-strength"></p>
+
+            <label class="label" for="gradeLevel">Grade Level</label>
+            <select id="gradeLevel" required>
+                <option value="" disabled selected>Grade Level</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+            </select>
+            <button class="button sign-up" type="button" onclick="submitSignup()">Sign Up</button>
+            <p class="footer links">Already have an account? <a href="#" onclick="toggleForms()">Sign In</a></p>
+        </form>
+    </div>
+    
+<script>
+    const loginContainer = document.getElementById('loginContainer');
+    const signupContainer = document.getElementById('signupContainer');
+    const signupPrompt = document.getElementById('signupPrompt');
+    const signupPassword = document.getElementById('signupPassword');
+    const passwordStrength = document.getElementById('passwordStrength');
+
+    // Initialize users with the saved teacher account
+    const users = [
+        {
+            username: "admin",
+            email: "admin@gmail.com",
+            password: "@dmin0215"
+        }
+    ];
+
+    function toggleForms() {
+        if (loginContainer.style.display === 'none') {
+            loginContainer.style.display = 'block';
+            signupContainer.style.display = 'none';
+        } else {
+            loginContainer.style.display = 'none';
+            signupContainer.style.display = 'block';
+        }
+    }
+
+    function signIn(event) {
+        event.preventDefault();
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        const isTeacher = document.getElementById('toggleSwitchLogin').checked;
+
+        const user = users.find(user => user.email === email);
+
+        if (!user) {
+            alert('Email not found.');
+            return;
+        }
+
+        if (!isTeacher && user.username === "admin") {
+            alert('Admin cannot log in with the student form.');
+            return;
+        }
+
+        if (user.password !== password) {
+            alert('Incorrect password.');
+            return;
+        }
+
+        // Store current user info in localStorage
+        localStorage.setItem('currentUser', JSON.stringify({
+            username: user.username,
+            email: user.email,
+            gradeLevel: user.gradeLevel
+        }));
+        
+        // Redirect based on user type
+        if (isTeacher) {
+            window.location.href = "dashboard.html"; // Redirect to leaderboard for teachers
+        } else {
+            window.location.href = "home.html"; // Redirect to home for students
+        }
+    }
+
+    signupPassword.addEventListener('input', () => {
+        const password = signupPassword.value;
+        passwordStrength.textContent = checkPasswordStrength(password);
+    });
+
+    function checkPasswordStrength(password) {
+        const strongPasswordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+        if (/\s/.test(password)) {
+            return 'Password cannot contain spaces.';
+        } else if (strongPasswordPattern.test(password)) {
+            return 'Strong password';
+        } else {
+            return 'Password must be at least 8 characters long, contain uppercase and lowercase letters, numbers, and special characters.';
+        }
+    }
+
+    function submitSignup() {
+        const username = document.getElementById('username').value;
+        const email = document.getElementById('signupEmail').value;
+        const password = document.getElementById('signupPassword').value;
+        const gradeLevel = document.getElementById('gradeLevel').value;
+        
+        // Check if email already exists
+        const existingUser = users.find(user => user.email === email);
+        if (existingUser) {
+            alert('This email is already registered.');
+            return;
+        }
+
+        const passwordStrengthText = checkPasswordStrength(password);
+        if (passwordStrengthText !== 'Strong password') {
+            alert('Please enter a strong password.');
+            return;
+        }
+
+        // Create new user object
+        const newUser = {
+            username: username,
+            email: email,
+            password: password,
+            gradeLevel: gradeLevel,
+            createdAt: new Date().toLocaleDateString()
+        };
+
+        // Add to users array
+        users.push(newUser);
+
+        // Store updated users array in localStorage
+        localStorage.setItem('users', JSON.stringify(users));
+
+        // Store current user info
+        localStorage.setItem('currentUser', JSON.stringify({
+            username: username,
+            email: email,
+            gradeLevel: gradeLevel
+        }));
+
+        // Store user in student info table data
+        const studentInfoData = JSON.parse(localStorage.getItem('studentInfo') || '[]');
+        studentInfoData.push({
+            fullName: username,
+            email: email,
+            gradeLevel: gradeLevel,
+            createdAt: newUser.createdAt
+        });
+        localStorage.setItem('studentInfo', JSON.stringify(studentInfoData));
+
+        alert('Account created successfully! Please sign in.');
+        toggleForms(); // Switch to login form
+    }
+
+    // Load existing users from localStorage when page loads
+    document.addEventListener('DOMContentLoaded', () => {
+        const storedUsers = localStorage.getItem('users');
+        if (storedUsers) {
+            const parsedUsers = JSON.parse(storedUsers);
+            // Merge with existing admin account
+            users.push(...parsedUsers.filter(user => user.username !== 'admin'));
+        }
+    });
+
+    function toggleLabel(type) {
+        const toggle = document.getElementById('toggleSwitchLogin');
+        const label = document.getElementById('toggleLabelLogin');
+        label.textContent = toggle.checked ? 'Admin' : 'Student';
+        signupPrompt.style.display = toggle.checked ? 'none' : 'block'; // Hide prompt for teachers
+        localStorage.setItem('toggleState', toggle.checked); // Save toggle state
+    }
+
+    // On page load, set the toggle state
+    window.onload = function() {
+        const toggle = document.getElementById('toggleSwitchLogin');
+        const savedToggleState = localStorage.getItem('toggleState') === 'true';
+        toggle.checked = savedToggleState;
+        toggleLabel(); // Update label based on the toggle state
+    };
+</script>
+</body>
+</html>

@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link href='https://fonts.googleapis.com/css?family=Bagel Fat One' rel='stylesheet'>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="common.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            background-color: black;
+            min-height: 100vh;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        html {
+            background-color: black;
+        }
+
+        .main-content {
+            background-color: #2E073F;
+            margin-left: 250px;
+            padding: 20px;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .content-wrapper {
+            width: 90%;
+            max-width: 1200px;
+            margin: 20px auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            width: 100%;
+        }
+
+        .header h1 {
+            color: white;
+            font-family: 'Bagel Fat One';
+            font-size: 2.2rem;
+            font-weight: 100;
+            margin: 0;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+            width: 100%;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 25px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .stat-card h2 {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            font-weight: 400;
+            font-family: 'Bagel Fat One';
+            font-weight: 100;
+            
+        }
+
+        .stat-card p {
+            color: white;
+            font-size: 2rem;
+            margin: 0;
+            font-weight: 300;
+        }
+
+        .activity-performance-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            width: 100%;
+        }
+
+        .recent-activity, .subject-performance {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 25px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            display: none; /* Hidden by default */
+        }
+
+        .recent-activity h2, .subject-performance h2 {
+            color: white;
+            font-family: 'Bagel Fat One';
+            font-size: 1.8rem;
+            font-weight: 100;
+            margin: 0 0 20px 0;
+            text-align: center;
+            
+        }
+
+        .activity-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .activity-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .activity-item:hover {
+            transform: translateX(5px);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .activity-item p {
+            margin: 0;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.95rem;
+        }
+
+        .activity-item b {
+            color: white;
+        }
+
+        .activity-item .time {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.85rem;
+            margin-top: 5px;
+            display: inline-block;
+        }
+
+        .subject-performance {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 32px 32px 24px 32px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            margin: 0 auto 30px auto;
+            min-width: 320px;
+            max-width: 800px;
+            max-height: 700px;
+            width: 100%;
+            display: none; /* Hidden by default, shown by JS */
+            
+
+            
+        }
+        .subject-performance h2 {
+            color: white;
+            font-family: 'Bagel Fat One';
+            font-size: 1.8rem;
+            font-weight: 100;
+            margin: 0 0 20px 0;
+            text-align: center;
+        }
+        .subject-performance h4 {
+            color: white;
+            margin: 24px 0 10px 0;
+            font-weight: 400;
+            font-size: 1.1rem;
+            text-align: left;
+        }
+        .progress-container {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            height: 12px;
+            overflow: hidden;
+            margin: 10px 0 18px 0;
+        }
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #E0BBE4, #957DAD);
+            transition: width 0.3s ease;
+        }
+        .subject-performance p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.95rem;
+            margin: 5px 0 18px 0;
+        }
+        @media screen and (max-width: 768px) {
+            .subject-performance {
+                min-width: 0;
+                max-width: 100%;
+                padding: 18px 8px 12px 8px;
+            }
+            .subject-performance h2 {
+                font-size: 1.3rem;
+            }
+            .subject-performance h4 {
+                font-size: 1rem;
+                margin: 18px 0 8px 0;
+            }
+            .progress-container {
+                height: 10px;
+            }
+        }
+        .no-data-message {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1.1rem;
+            margin: 40px 0;
+            font-style: italic;
+        }
+
+        @media screen and (max-width: 1200px) {
+            .content-wrapper {
+                width: 95%;
+            }
+        }
+
+        @media screen and (max-width: 768px) {
+            .main-content {
+                margin-left: 0;
+                padding: 15px;
+            }
+
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .stat-card {
+                padding: 20px;
+            }
+
+            .activity-performance-container {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .recent-activity, .subject-performance {
+                padding: 20px;
+            }
+        }
+
+        /* Updated Sidebar Navigation Styles */
+        .sidebar ul li a {
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            width: 100%;
+            box-sizing: border-box;
+            font-size: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sidebar ul li a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255, 255, 255, 0.2),
+                transparent
+            );
+            transition: 0.5s;
+        }
+
+        .sidebar ul li a:hover::before {
+            left: 100%;
+        }
+
+        .sidebar ul li a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(8px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .sidebar ul li a.active {
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .sidebar ul li a i {
+            margin-right: 15px;
+            font-size: 1.2rem;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar ul li a:hover i {
+            transform: scale(1.2);
+        }
+
+        .sidebar .bottom-links li a {
+            background-color: rgba(255, 255, 255, 0.1);
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar .bottom-links li a:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px);
+        }
+
+        /* Add ripple effect */
+        .sidebar ul li a .ripple {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: scale(0);
+            animation: ripple 0.6s linear;
+            pointer-events: none;
+        }
+
+        @keyframes ripple {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="dashboard" class="dashboard-container">
+        <div class="sidebar">
+            <h2>Questify</h2>
+            <ul>
+                <li><a href="dashboard.html" class="active"><i class="fas fa-home"></i>Dashboard</a></li>
+                <li><a href="studentInfo.html"><i class="fa-solid fa-circle-info"></i>Student Info</a></li>
+                <li><a href="retakers.html"><i class="fa-solid fa-clock"></i>Retakers</a></li>
+            </ul>
+            <ul class="bottom-links">
+                <li><a href="#"><i class="fas fa-cog"></i>Settings</a></li>
+                <li><a href="index.html"><i class="fas fa-sign-out-alt"></i>Log out</a></li>
+            </ul>
+        </div>
+        <div class="main-content">
+            <div class="content-wrapper">
+                <div class="header">
+                    <h1>Admin Dashboard</h1>
+                </div>
+                <div class="stats">
+                    <div class="stat-card">
+                        <h2>Total Students</h2>
+                        <p id="totalStudents">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h2>Total Quizzes</h2>
+                        <p id="totalQuizzes">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h2>Active Users</h2>
+                        <p id="activeUsers">0</p>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 32px; justify-content: center; align-items: stretch; margin-top: 32px;">
+                    <div class="subject-performance" style="flex: 1; max-width: 500px; min-width: 320px;">
+                        <h2>Subject Performance</h2>
+                        <div id="subjectPerformanceContent">
+                            <!-- Subject performance data will be dynamically added here -->
+                        </div>
+                    </div>
+                    <div class="recent-activity" style="flex: 1; max-width: 500px; min-width: 320px; display: flex; flex-direction: column;">
+                        <h2>Recent Activity</h2>
+                        <div class="activity-list" id="activityList" style="flex: 1;">
+                            <!-- Activities will be dynamically added here -->
+                        </div>
+                    </div>
+                </div>
+                <p class="no-data-message">No quiz activity recorded yet. Activity and performance data will appear here once students start taking quizzes.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Function to load user data from localStorage
+        function loadUserData() {
+            const studentInfoData = JSON.parse(localStorage.getItem('studentInfo')) || [];
+            document.getElementById('totalStudents').textContent = studentInfoData.length;
+            document.getElementById('activeUsers').textContent = studentInfoData.length; // For now, considering all students as active
+        }
+
+        // Function to update recent activity
+        function updateRecentActivity(results) {
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            const activityList = document.getElementById('activityList');
+            activityList.innerHTML = '';
+
+            // Sort results by date (descending)
+            const sortedResults = results.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            if (sortedResults.length === 0) {
+                activityList.innerHTML = '<div class="no-data-message">No quiz history yet.</div>';
+                return;
+            }
+
+            sortedResults.forEach((result, idx) => {
+                // Find username by email
+                let displayName = result.studentName;
+                const user = users.find(u => u.email === result.studentName);
+                if (user && user.username) displayName = user.username;
+                const quarterText = result.quarter ? `Quarter ${result.quarter}` : '';
+                const scoreText = typeof result.score !== 'undefined' ? `Score: ${result.score}%` : '';
+                const dateText = result.date ? new Date(result.date).toLocaleString() : '';
+                const activityItem = document.createElement('div');
+                activityItem.className = 'activity-item';
+                activityItem.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <p><b>${displayName}</b> completed a quiz: ${result.subject} ${quarterText}</p>
+                            <p>${scoreText}</p>
+                            <span class="time">${dateText}</span>
+                        </div>
+                        <button class="delete-activity-btn" title="Delete Activity" style="background: none; border: none; color: #F87171; cursor: pointer; font-size: 1.2rem; margin-left: 16px;" onclick="deleteActivity(${idx})">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+                activityList.appendChild(activityItem);
+            });
+        }
+
+        // Function to load quiz results
+        function loadQuizResults() {
+            const englishLeaderboard = JSON.parse(localStorage.getItem('english_leaderboard')) || [];
+            const mathLeaderboard = JSON.parse(localStorage.getItem('math_leaderboard')) || [];
+            const allResults = [...englishLeaderboard, ...mathLeaderboard];
+
+            // Update total quizzes taken
+            document.getElementById('totalQuizzes').textContent = allResults.length;
+
+            if (allResults.length > 0) {
+                // Show activity section and hide no-data message
+                document.querySelector('.recent-activity').style.display = 'block';
+                document.querySelector('.subject-performance').style.display = 'block';
+                document.querySelector('.no-data-message').style.display = 'none';
+
+                // Update recent activity
+                updateRecentActivity(allResults);
+
+                // Update subject performance
+                updateSubjectPerformance(englishLeaderboard, mathLeaderboard);
+            }
+        }
+
+        // Function to update subject performance per grade level
+        function updateSubjectPerformance(englishLeaderboard, mathLeaderboard) {
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            const performanceContent = document.getElementById('subjectPerformanceContent');
+            const grades = ['7', '8', '9', '10'];
+            let html = '';
+
+            grades.forEach(grade => {
+                // Get emails of users in this grade
+                const gradeUsers = users.filter(u => u.gradeLevel === grade).map(u => u.email);
+                // English
+                const englishResults = englishLeaderboard.filter(q => gradeUsers.includes(q.studentName));
+                const englishStudentCount = new Set(englishResults.map(q => q.studentName)).size;
+                const englishAvg = calculateAverage(englishResults);
+                // Math
+                const mathResults = mathLeaderboard.filter(q => gradeUsers.includes(q.studentName));
+                const mathStudentCount = new Set(mathResults.map(q => q.studentName)).size;
+                const mathAvg = calculateAverage(mathResults);
+                html += `
+                    <div style="margin-bottom: 18px;">
+                        <h4>Grade ${grade}</h4>
+                        <div style="margin-bottom: 6px;">English: <b>${englishStudentCount}</b> students, <b>${englishResults.length}</b> quizzes</div>
+                        <div class="progress-container"><div class="progress-bar" style="width: ${englishAvg}%;"></div></div>
+                        <div style="margin-bottom: 6px;">Mathematics: <b>${mathStudentCount}</b> students, <b>${mathResults.length}</b> quizzes</div>
+                        <div class="progress-container"><div class="progress-bar" style="width: ${mathAvg}%;"></div></div>
+                    </div>
+                `;
+            });
+            performanceContent.innerHTML = html;
+        }
+
+        // Helper function to calculate average score
+        function calculateAverage(results) {
+            if (results.length === 0) return 0;
+            const sum = results.reduce((acc, curr) => acc + curr.score, 0);
+            return Math.round((sum / results.length) * 100);
+        }
+
+        // Load data when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            loadUserData();
+            loadQuizResults();
+        });
+
+        // Add event listener for storage changes
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'users' || e.key === 'english_leaderboard' || e.key === 'math_leaderboard') {
+                loadUserData();
+                loadQuizResults();
+            }
+        });
+
+        // Add ripple effect to navigation items
+        document.querySelectorAll('.sidebar ul li a').forEach(link => {
+            link.addEventListener('click', function(e) {
+                const ripple = document.createElement('span');
+                ripple.className = 'ripple';
+                this.appendChild(ripple);
+                
+                const rect = link.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                
+                ripple.style.width = ripple.style.height = `${size}px`;
+                ripple.style.left = `${e.clientX - rect.left - size/2}px`;
+                ripple.style.top = `${e.clientY - rect.top - size/2}px`;
+                
+                ripple.addEventListener('animationend', () => {
+                    ripple.remove();
+                });
+            });
+        });
+
+        // Add deleteActivity function to remove a quiz result
+        window.deleteActivity = function(idx) {
+            const englishLeaderboard = JSON.parse(localStorage.getItem('english_leaderboard')) || [];
+            const mathLeaderboard = JSON.parse(localStorage.getItem('math_leaderboard')) || [];
+            const allResults = [...englishLeaderboard, ...mathLeaderboard];
+            // Sort by date descending to match display order
+            const sortedResults = allResults.sort((a, b) => new Date(b.date) - new Date(a.date));
+            const toDelete = sortedResults[idx];
+            let updated = false;
+            if (toDelete.subject && toDelete.subject.toLowerCase() === 'english') {
+                const newEnglish = englishLeaderboard.filter(r => !isSameResult(r, toDelete));
+                if (newEnglish.length !== englishLeaderboard.length) {
+                    localStorage.setItem('english_leaderboard', JSON.stringify(newEnglish));
+                    updated = true;
+                }
+            } else if (toDelete.subject && toDelete.subject.toLowerCase() === 'mathematics') {
+                const newMath = mathLeaderboard.filter(r => !isSameResult(r, toDelete));
+                if (newMath.length !== mathLeaderboard.length) {
+                    localStorage.setItem('math_leaderboard', JSON.stringify(newMath));
+                    updated = true;
+                }
+            }
+            if (updated) {
+                loadQuizResults();
+            }
+        }
+        // Helper to compare two results
+        function isSameResult(a, b) {
+            return a.studentName === b.studentName &&
+                   a.subject === b.subject &&
+                   (a.quarter || '') === (b.quarter || '') &&
+                   a.score === b.score &&
+                   a.date === b.date;
+        }
+    </script>
+</body>
+</html>

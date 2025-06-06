@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link href='https://fonts.googleapis.com/css?family=Bagel Fat One' rel='stylesheet'>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Info</title>
+    <link rel="stylesheet" href="common.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .main-content {
+            padding: 20px;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #2E073F;
+        }
+
+        .content-wrapper {
+            width: 90%;
+            max-width: 1200px;
+            margin: 20px auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            width: 100%;
+        }
+
+        .header h1 {
+            margin: 0;
+            color: white;
+            font-family: 'Bagel Fat One';
+            font-size: 2.2rem;
+            font-weight: 100;
+        }
+
+        .add-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            cursor: pointer;
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .add-btn i {
+            font-size: 1.1rem;
+        }
+
+        .add-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .search-container {
+            margin-bottom: 30px;
+            width: 100%;
+            position: relative;
+        }
+
+        .search-container i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .search-container input {
+            width: 100%;
+            padding: 15px 15px 15px 45px;
+            border: none;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            color: white;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .search-container input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .search-container input:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 30px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            width: 100%;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-top: 20px;
+            color: white;
+        }
+
+        th, td {
+            padding: 16px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        th {
+            background: rgba(255, 255, 255, 0.1);
+            font-weight: 500;
+            font-size: 0.95rem;
+            letter-spacing: 0.5px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        th:first-child {
+            border-top-left-radius: 12px;
+        }
+
+        th:last-child {
+            border-top-right-radius: 12px;
+        }
+
+        tr:last-child td:first-child {
+            border-bottom-left-radius: 12px;
+        }
+
+        tr:last-child td:last-child {
+            border-bottom-right-radius: 12px;
+        }
+
+        tbody tr {
+            transition: all 0.3s ease;
+        }
+
+        tbody tr:hover {
+            background: rgba(255, 255, 255, 0.05);
+            transform: translateY(-2px);
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            margin: 0 5px;
+            color: white;
+            transition: all 0.3s ease;
+            border-radius: 8px;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+        }
+
+        .action-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: scale(1.1);
+        }
+
+        .action-btn i {
+            font-size: 1.1rem;
+        }
+
+        .edit-btn i {
+            color: #60A5FA;
+        }
+
+        .delete-btn i {
+            color: #F87171;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            width: 90%;
+            max-width: 500px;
+            margin: 10% auto;
+            padding: 30px;
+            color: white;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            font-family: 'Bagel Fat One';
+            font-size: 1.8rem;
+            font-weight: 100;
+        }
+
+        .close {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .close:hover {
+            color: white;
+            transform: rotate(90deg);
+        }
+
+        .modal-body {
+            margin-bottom: 25px;
+        }
+
+        .modal-body label {
+            display: block;
+            margin-bottom: 8px;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.95rem;
+        }
+
+        .modal-body input,
+        .modal-body select {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .modal-body input:focus,
+        .modal-body select:focus {
+            outline: none;
+            border-color: rgba(255, 255, 255, 0.4);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .modal-footer button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .save-btn {
+            background: rgba(72, 187, 120, 0.2);
+            color: #48bb78;
+            border: 1px solid rgba(72, 187, 120, 0.2);
+        }
+
+        .cancel-btn {
+            background: rgba(245, 101, 101, 0.2);
+            color: #f56565;
+            border: 1px solid rgba(245, 101, 101, 0.2);
+        }
+
+        .save-btn:hover {
+            background: rgba(72, 187, 120, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .cancel-btn:hover {
+            background: rgba(245, 101, 101, 0.3);
+            transform: translateY(-2px);
+        }
+
+        @media screen and (max-width: 768px) {
+            .content-wrapper {
+                width: 95%;
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            .add-btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .container {
+                padding: 20px;
+            }
+
+            .search-container input {
+                padding: 12px 12px 12px 40px;
+            }
+
+            table {
+                font-size: 0.9rem;
+            }
+
+            th, td {
+                padding: 12px;
+            }
+
+            .action-btn {
+                padding: 6px;
+            }
+
+            .modal-content {
+                width: 95%;
+                margin: 5% auto;
+                padding: 20px;
+            }
+        }
+
+        /* Add the same styles as in dashboard.html */
+        .sidebar ul li a {
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            width: 100%;
+            box-sizing: border-box;
+            font-size: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sidebar ul li a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255, 255, 255, 0.2),
+                transparent
+            );
+            transition: 0.5s;
+        }
+
+        .sidebar ul li a:hover::before {
+            left: 100%;
+        }
+
+        .sidebar ul li a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(8px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .sidebar ul li a.active {
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .sidebar ul li a i {
+            margin-right: 15px;
+            font-size: 1.2rem;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar ul li a:hover i {
+            transform: scale(1.2);
+        }
+
+        .sidebar .bottom-links li a {
+            background-color: rgba(255, 255, 255, 0.1);
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar .bottom-links li a:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px);
+        }
+
+        .sidebar ul li a .ripple {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: scale(0);
+            animation: ripple 0.6s linear;
+            pointer-events: none;
+        }
+
+        @keyframes ripple {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="dashboard" class="dashboard-container">
+        <div class="sidebar">
+            <h2>Questify</h2>
+            <ul>
+                <li><a href="dashboard.html"><i class="fas fa-home"></i>Dashboard</a></li>
+                <li><a href="studentInfo.html" class="active"><i class="fa-solid fa-circle-info"></i>Student Info</a></li>
+                <li><a href="retakers.html"><i class="fa-solid fa-clock"></i>Retakers</a></li>
+            </ul>
+            <ul class="bottom-links">
+                <li><a href="#"><i class="fas fa-cog"></i>Settings</a></li>
+                <li><a href="index.html"><i class="fas fa-sign-out-alt"></i>Log out</a></li>
+            </ul>
+        </div>
+        <div class="main-content">
+            <div class="content-wrapper">
+                <div class="header">
+                    <h1>Student Information</h1>
+                </div>
+        
+                <div class="search-container">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search students..." id="searchInput" />
+                </div>
+
+                <div class="container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Student Name</th>
+                                <th>Email Address</th>
+                                <th>Grade Level</th>
+                                <th>Created At</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="userTable">
+                            <tr>
+                                <td>Jhaira Natividad</td>
+                                <td>jhaira@example.com</td>
+                                <td>10</td>
+                                <td>1/15/2023</td>
+                                <td>
+                                    <button class="action-btn delete-btn" onclick="deleteUser(this)"><i class="fa-solid fa-trash"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Lim Tris</td>
+                                <td>lim@example.com</td>
+                                <td>9</td>
+                                <td>2/10/2023</td>
+                                <td>
+                                    <button class="action-btn delete-btn" onclick="deleteUser(this)"><i class="fa-solid fa-trash"></i></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Load student data from localStorage
+        function loadStudentData() {
+            const studentInfoData = JSON.parse(localStorage.getItem('studentInfo') || '[]');
+            const userTable = document.getElementById('userTable');
+            userTable.innerHTML = ''; // Clear existing rows
+
+            studentInfoData.forEach(student => {
+                const row = userTable.insertRow();
+                row.innerHTML = `
+                    <td>${student.fullName}</td>
+                    <td>${student.email}</td>
+                    <td>${student.gradeLevel}</td>
+                    <td>${student.createdAt}</td>
+                    <td>
+                        <button class="action-btn delete-btn" onclick="deleteUser(this)"><i class="fa-solid fa-trash"></i></button>
+                    </td>
+                `;
+            });
+        }
+
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', function() {
+            const filter = this.value.toLowerCase();
+            const rows = document.querySelectorAll('#userTable tr');
+
+            rows.forEach(row => {
+                const userName = row.cells[0].textContent.toLowerCase();
+                const userEmail = row.cells[1].textContent.toLowerCase();
+                row.style.display = userName.includes(filter) || userEmail.includes(filter) ? '' : 'none';
+            });
+        });
+
+        // Load student data when page loads
+        document.addEventListener('DOMContentLoaded', loadStudentData);
+
+        // Add ripple effect to navigation items
+        document.querySelectorAll('.sidebar ul li a').forEach(link => {
+            link.addEventListener('click', function(e) {
+                const ripple = document.createElement('span');
+                ripple.className = 'ripple';
+                this.appendChild(ripple);
+                
+                const rect = link.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                
+                ripple.style.width = ripple.style.height = `${size}px`;
+                ripple.style.left = `${e.clientX - rect.left - size/2}px`;
+                ripple.style.top = `${e.clientY - rect.top - size/2}px`;
+                
+                ripple.addEventListener('animationend', () => {
+                    ripple.remove();
+                });
+            });
+        });
+
+        // Replace loadRetakersData function with this:
+        function loadRetakersData() {
+            const retakeRequests = JSON.parse(localStorage.getItem('retake_requests')) || [];
+            const tableBody = document.getElementById('retakersTableBody');
+            const noRetakersMessage = document.querySelector('.no-retakers-message');
+            
+            if (retakeRequests.length > 0) {
+                noRetakersMessage.style.display = 'none';
+                tableBody.innerHTML = retakeRequests.map((retaker, idx) => `
+                    <tr>
+                        <td>${retaker.userId}</td>
+                        <td>${retaker.subject.charAt(0).toUpperCase() + retaker.subject.slice(1)}</td>
+                        <td>Quarter ${retaker.quarter}</td>
+                        <td>${retaker.previousScore ? retaker.previousScore + '%' : 'N/A'}</td>
+                        <td>${new Date(retaker.date).toLocaleDateString()}</td>
+                        <td>
+                            <button class="action-button" onclick="showReasonModal(${idx})">View Reason</button>
+                        </td>
+                        <td class="action-buttons">
+                            <button class="action-button approve-button" onclick="handleAction(this, 'approve')">Approve</button>
+                            <button class="action-button deny-button" onclick="handleAction(this, 'deny')">Deny</button>
+                        </td>
+                    </tr>
+                `).join('');
+                window.retakeRequests = retakeRequests; // Make available for modal
+            } else {
+                noRetakersMessage.style.display = 'block';
+                tableBody.innerHTML = '';
+            }
+        }
+
+        // Modal logic
+        function showReasonModal(idx) {
+            const retaker = window.retakeRequests[idx];
+            const modal = document.getElementById('reasonModal');
+            const modalContent = document.getElementById('reasonModalContent');
+            modalContent.textContent = retaker.reason;
+            modal.style.display = 'flex';
+        }
+        function closeReasonModal() {
+            document.getElementById('reasonModal').style.display = 'none';
+        }
+
+        // ... existing code ...
+        document.addEventListener('DOMContentLoaded', loadRetakersData);
+        window.showReasonModal = showReasonModal;
+        window.closeReasonModal = closeReasonModal;
+    </script>
+    <div id="reasonModal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.5); align-items:center; justify-content:center; z-index:9999;">
+        <div style="background:white; color:black; padding:30px; border-radius:10px; max-width:400px; width:90%; position:relative;">
+            <h3>Retake Reason</h3>
+            <p id="reasonModalContent"></p>
+            <button onclick="closeReasonModal()" style="margin-top:20px; padding:8px 20px; border:none; border-radius:5px; background:#8306f8; color:white;">Close</button>
+        </div>
+    </div>
+</body>
+</html>
