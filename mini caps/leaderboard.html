@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Questify - Leaderboard</title>
+    <link href='https://fonts.googleapis.com/css?family=Bagel Fat One' rel='stylesheet'>
+    <link rel="stylesheet" href="common.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .leaderboard-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 40px;
+            width: 80%;
+            max-width: 900px;
+            margin: 40px auto;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        }
+
+        .leaderboard-title {
+            text-align: center;
+            color: white;
+            font-family: 'Bagel Fat One';
+            font-size: 3rem;
+            margin-bottom: 40px;
+            font-weight: 100;
+        }
+
+        .subject-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .subject-tab {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: none;
+            padding: 15px 35px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            min-width: 160px;
+        }
+
+        .subject-tab.active {
+            background: #E0BBE4;
+            color: #4A148C;
+            font-weight: bold;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(224, 187, 228, 0.3);
+        }
+
+        .subject-tab:hover {
+            background: rgba(224, 187, 228, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .leaderboard-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            padding: 10px;
+        }
+
+        .leaderboard-item {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .leaderboard-item:hover {
+            transform: translateX(10px);
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .rank {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #E0BBE4;
+            min-width: 50px;
+            text-align: center;
+        }
+
+        .user-info {
+            flex: 1;
+        }
+
+        .username {
+            font-size: 1.4rem;
+            color: white;
+            margin: 0 0 8px 0;
+        }
+
+        .attempt-info {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1rem;
+        }
+
+        .score {
+            font-size: 1.6rem;
+            color: #E0BBE4;
+            font-weight: bold;
+            margin-left: auto;
+            padding-left: 30px;
+            border-left: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .no-data-message {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1.3rem;
+            margin: 60px 0;
+            font-style: italic;
+        }
+
+        @media screen and (max-width: 768px) {
+            .leaderboard-container {
+                padding: 25px;
+                width: 90%;
+                margin: 20px auto;
+            }
+
+            .leaderboard-title {
+                font-size: 2.2rem;
+                margin-bottom: 30px;
+            }
+
+            .subject-tabs {
+                flex-wrap: wrap;
+                gap: 15px;
+                margin-bottom: 30px;
+            }
+
+            .subject-tab {
+                width: 100%;
+                padding: 12px 20px;
+                min-width: unset;
+                font-size: 1rem;
+            }
+
+            .leaderboard-item {
+                padding: 20px;
+                gap: 15px;
+            }
+
+            .rank {
+                font-size: 1.4rem;
+                min-width: 40px;
+            }
+
+            .username {
+                font-size: 1.2rem;
+                margin-bottom: 5px;
+            }
+
+            .attempt-info {
+                font-size: 0.9rem;
+            }
+
+            .score {
+                font-size: 1.3rem;
+                padding-left: 20px;
+            }
+
+            .no-data-message {
+                font-size: 1.1rem;
+                margin: 40px 0;
+            }
+        }
+
+        @media screen and (max-width: 480px) {
+            .leaderboard-container {
+                padding: 20px;
+                width: 95%;
+            }
+
+            .leaderboard-title {
+                font-size: 2rem;
+            }
+
+            .leaderboard-item {
+                flex-wrap: wrap;
+                text-align: center;
+            }
+
+            .rank {
+                width: 100%;
+                min-width: unset;
+                margin-bottom: 10px;
+            }
+
+            .user-info {
+                width: 100%;
+                text-align: center;
+            }
+
+            .score {
+            width: 100%;
+                text-align: center;
+                border-left: none;
+                border-top: 1px solid rgba(255, 255, 255, 0.2);
+                padding: 15px 0 0 0;
+                margin-top: 15px;
+            }
+        }
+
+        .sidebar {
+            width: 250px;
+            background-image: url("bg3.png");
+            background-size: cover;
+            background-position: center;
+            padding: 20px;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            transition: all 0.3s ease;
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .sidebar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.521);
+            z-index: -1;
+        }
+
+        .sidebar h2 {
+            text-align: center;
+            color: white;
+            font-family: 'Bagel Fat One';
+            font-size: 2.5rem;
+            font-weight: 100;
+            margin: 0 0 20px 0;
+            width: 100%;
+            position: relative;
+            z-index: 1;
+        }
+
+        .sidebar ul {
+            list-style-type: none;
+            padding: 0;
+            margin-bottom: auto;
+            width: 100%;
+            position: relative;
+            z-index: 1;
+        }
+
+        .sidebar ul li {
+            margin: 10px 0;
+            width: 100%;
+        }
+
+        .sidebar ul li a {
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            width: 100%;
+            box-sizing: border-box;
+            font-size: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sidebar ul li a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255, 255, 255, 0.2),
+                transparent
+            );
+            transition: 0.5s;
+        }
+
+        .sidebar ul li a:hover::before {
+            left: 100%;
+        }
+
+        .sidebar ul li a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(8px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .sidebar ul li a.active {
+            background: rgba(255, 255, 255, 0.2);
+            border-left: 4px solid white;
+        }
+
+        .sidebar ul li a.active:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        .sidebar ul li a i {
+            margin-right: 15px;
+            font-size: 1.2rem;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar ul li a:hover i {
+            transform: scale(1.2);
+        }
+
+        .sidebar .bottom-links {
+            margin-top: auto;
+            padding-bottom: 10px;
+            width: 100%;
+        }
+
+        .sidebar .bottom-links li a {
+            background-color: rgba(255, 255, 255, 0.1);
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar .bottom-links li a:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px);
+        }
+
+        /* Menu Toggle Button */
+        .menu-toggle {
+            display: none;
+            position: fixed;
+            top: 20px;
+           left: -400px;
+            background: none;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            cursor: pointer;
+            z-index: 1001;
+            font-size: 24px;
+        }
+
+        .menu-toggle i {
+            display: block;
+        }
+
+        @media screen and (max-width: 768px) {
+            .menu-toggle {
+                display: block;
+            }
+
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+        }
+
+        .main-content {
+                margin-left: 0;
+                padding: 15px;
+                background-color: #2E073F;
+            }
+
+            .leaderboard-container {
+                margin-top: 60px;
+            }
+        }
+
+        /* Logout Modal Styles */
+        .logout-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .logout-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            padding: 30px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            color: white;
+        }
+
+        .logout-container h2 {
+            font-family: 'Bagel Fat One';
+            font-size: 2rem;
+            font-weight: 100;
+            margin-bottom: 20px;
+        }
+
+        .logout-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .logout-btn {
+            padding: 10px 25px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .confirm-btn {
+            background-color: #E0BBE4;
+            color: #4A148C;
+        }
+
+        .cancel-btn {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .logout-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Loading Animation */
+        .loading-spinner {
+            display: none;
+            margin: 20px auto;
+        }
+
+        .loading-spinner div {
+            width: 10px;
+            height: 10px;
+            background-color: white;
+            border-radius: 50%;
+            display: inline-block;
+            margin: 0 3px;
+            animation: bounce 0.5s infinite alternate;
+        }
+
+        .loading-spinner div:nth-child(2) {
+            animation-delay: 0.1s;
+        }
+
+        .loading-spinner div:nth-child(3) {
+            animation-delay: 0.2s;
+        }
+
+        @keyframes bounce {
+            to {
+                transform: translateY(-10px);
+            }
+        }
+
+        .success-message {
+            display: none;
+            color: #4BB543;
+            margin: 20px 0;
+            font-size: 1.1rem;
+        }
+
+        .section-title {
+            color: white;
+            font-family: 'Bagel Fat One';
+            font-size: 1.8rem;
+            margin: 40px 0 20px;
+            font-weight: 100;
+            text-align: center;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .section-title::before,
+        .section-title::after {
+            content: '';
+            height: 2px;
+            background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.2), transparent);
+            flex: 1;
+            margin: 0 20px;
+        }
+
+        .summative-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 30px;
+            margin-top: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .summative-section .section-title {
+            margin-top: 0;
+        }
+
+        .summative-section .leaderboard-item {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .summative-section .leaderboard-item:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .score-grade {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 5px;
+            padding-left: 30px;
+            border-left: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .grade {
+            font-size: 1.2rem;
+            font-weight: bold;
+            padding: 2px 10px;
+            border-radius: 5px;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .grade-a { color: #4CAF50; }
+        .grade-b { color: #8BC34A; }
+        .grade-c { color: #FFC107; }
+        .grade-d { color: #FF9800; }
+        .grade-f { color: #f44336; }
+
+        .leaderboard-list + .section-title {
+            margin-top: 60px;
+        }
+
+        @media screen and (max-width: 768px) {
+            .section-title::before,
+            .section-title::after {
+                margin: 0 10px;
+            }
+
+            .summative-section {
+                padding: 20px;
+                margin-top: 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <button class="menu-toggle" id="menuToggle">
+            <i class="fas fa-bars"></i>
+        </button>
+        <div class="sidebar" id="sidebar">
+            <h2>Questify</h2>
+            <ul>
+                <li><a href="home.html"><i class="fas fa-home"></i>Home</a></li>
+                <li><a href="category.html"><i class="fas fa-th-large"></i>Category</a></li>
+                <li><a href="leaderboard.html" class="active"><i class="fas fa-chart-bar"></i>Leaderboard</a></li>
+                <li><a href="profile.html"><i class="fas fa-user"></i>Profile</a></li>
+            </ul>
+            <ul class="bottom-links">
+                <li><a href="#"><i class="fas fa-cog"></i>Settings</a></li>
+                <li><a href="#" onclick="confirmLogout(); return false;"><i class="fas fa-sign-out-alt"></i>Log out</a></li>
+            </ul>
+        </div>
+        <div class="main-content">
+            <div class="leaderboard-container">
+                <h1 class="leaderboard-title">Leaderboard</h1>
+                <div class="subject-tabs">
+                    <button class="subject-tab active" onclick="showSubject('english')">English</button>
+                    <button class="subject-tab" onclick="showSubject('math')">Mathematics</button>
+                    </div>
+                <div id="leaderboardContent">
+                    <!-- Content will be dynamically inserted here -->
+                </div>
+                    </div>
+                    </div>
+                </div>
+
+    <!-- Logout Modal -->
+    <div class="logout-modal" id="logoutModal">
+        <div class="logout-container">
+            <h2>Logout Confirmation</h2>
+            <p>Are you sure you want to log out?</p>
+            <div class="loading-spinner" id="loadingSpinner">
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
+            <div class="success-message" id="successMessage">
+                Successfully logged out!
+            </div>
+            <div class="logout-buttons" id="logoutButtons">
+                <button class="logout-btn confirm-btn" onclick="proceedLogout()">Yes, Logout</button>
+                <button class="logout-btn cancel-btn" onclick="cancelLogout()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Hamburger menu functionality
+        document.getElementById('menuToggle').addEventListener('click', function() {
+            document.getElementById('sidebar').classList.toggle('active');
+        });
+
+        // Close sidebar when clicking outside on mobile
+        document.addEventListener('click', function(event) {
+            const sidebar = document.getElementById('sidebar');
+            const menuToggle = document.getElementById('menuToggle');
+            
+            if (!sidebar.contains(event.target) && !menuToggle.contains(event.target)) {
+                sidebar.classList.remove('active');
+            }
+        });
+
+        // Logout functionality
+        function confirmLogout() {
+            document.getElementById('logoutModal').style.display = 'flex';
+        }
+
+        function cancelLogout() {
+            document.getElementById('logoutModal').style.display = 'none';
+        }
+
+        function proceedLogout() {
+            const loadingSpinner = document.getElementById('loadingSpinner');
+            const logoutButtons = document.getElementById('logoutButtons');
+            const successMessage = document.getElementById('successMessage');
+
+            // Hide buttons and show loading
+            logoutButtons.style.display = 'none';
+            loadingSpinner.style.display = 'block';
+
+            // Simulate logout process
+            setTimeout(() => {
+                loadingSpinner.style.display = 'none';
+                successMessage.style.display = 'block';
+
+                // Redirect after showing success message
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1500);
+            }, 2000);
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('logoutModal').addEventListener('click', function(event) {
+            if (event.target === this) {
+                cancelLogout();
+            }
+        });
+
+        function showSubject(subject) {
+            // Update active tab
+            document.querySelectorAll('.subject-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelector(`.subject-tab[onclick*="${subject}"]`).classList.add('active');
+
+            // Get leaderboard data from localStorage
+            const leaderboardData = JSON.parse(localStorage.getItem(`${subject}_leaderboard`) || '[]');
+            const leaderboardContent = document.getElementById('leaderboardContent');
+
+            if (leaderboardData.length === 0) {
+                leaderboardContent.innerHTML = `
+                    <div class="no-data-message">
+                        <p>No quiz attempts yet for ${subject.charAt(0).toUpperCase() + subject.slice(1)}.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Separate regular quizzes and summative tests
+            const regularQuizzes = leaderboardData.filter(result => !result.type);
+            const summativeTests = leaderboardData.filter(result => result.type === 'Summative');
+
+            // Process regular quiz results to get unique users with their best scores
+            const userBestScores = {};
+            regularQuizzes.forEach(result => {
+                if (!userBestScores[result.studentName] || 
+                    userBestScores[result.studentName].score < result.score) {
+                    userBestScores[result.studentName] = {
+                        score: result.score,
+                        time: result.time,
+                        attempts: regularQuizzes.filter(r => r.studentName === result.studentName).length,
+                        lastAttempt: result.date
+                    };
+                }
+            });
+
+            // Process summative test results
+            const userSummativeScores = {};
+            summativeTests.forEach(result => {
+                if (!userSummativeScores[result.studentName] || 
+                    userSummativeScores[result.studentName].score < result.score) {
+                    userSummativeScores[result.studentName] = {
+                        score: result.score,
+                        time: result.time,
+                        attempts: summativeTests.filter(r => r.studentName === result.studentName).length,
+                        lastAttempt: result.date
+                    };
+                }
+            });
+
+            // Convert to arrays and sort by score (and time for ties)
+            const sortedRegularUsers = Object.entries(userBestScores)
+                .map(([name, data]) => ({
+                    name,
+                    ...data
+                }))
+                .sort((a, b) => {
+                    if (b.score === a.score) {
+                        return a.time - b.time;
+                    }
+                    return b.score - a.score;
+                });
+
+            const sortedSummativeUsers = Object.entries(userSummativeScores)
+                .map(([name, data]) => ({
+                    name,
+                    ...data
+                }))
+                .sort((a, b) => {
+                    if (b.score === a.score) {
+                        return a.time - b.time;
+                    }
+                    return b.score - a.score;
+                });
+
+            // Generate leaderboard HTML
+            leaderboardContent.innerHTML = `
+                ${sortedRegularUsers.length > 0 ? `
+                    <h2 class="section-title">Quarter Quizzes</h2>
+                    <div class="leaderboard-list">
+                        ${sortedRegularUsers.map((user, index) => `
+                            <div class="leaderboard-item">
+                                <div class="rank">#${index + 1}</div>
+                                <div class="user-info">
+                                    <h3 class="username">${user.name}</h3>
+                                    <p class="attempt-info">
+                                        ${user.attempts} attempt${user.attempts !== 1 ? 's' : ''} • 
+                                        Time: ${formatTime(user.time)} •
+                                        Last: ${new Date(user.lastAttempt).toLocaleDateString()}
+                                    </p>
+                                </div>
+                                <div class="score">${user.score}%</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                ` : ''}
+
+                ${sortedSummativeUsers.length > 0 ? `
+                    <div class="summative-section">
+                        <h2 class="section-title">Summative Tests</h2>
+                        <div class="leaderboard-list">
+                            ${sortedSummativeUsers.map((user, index) => {
+                                let grade;
+                                if (user.score >= 90) grade = 'A';
+                                else if (user.score >= 80) grade = 'B';
+                                else if (user.score >= 70) grade = 'C';
+                                else if (user.score >= 60) grade = 'D';
+                                else grade = 'F';
+
+                                return `
+                                    <div class="leaderboard-item">
+                                        <div class="rank">#${index + 1}</div>
+                                        <div class="user-info">
+                                            <h3 class="username">${user.name}</h3>
+                                            <p class="attempt-info">
+                                                ${user.attempts} attempt${user.attempts !== 1 ? 's' : ''} • 
+                                                Time: ${formatTime(user.time)} •
+                                                Last: ${new Date(user.lastAttempt).toLocaleDateString()}
+                                            </p>
+                                        </div>
+                                        <div class="score-grade">
+                                            <div class="score">${user.score}%</div>
+                                            <div class="grade grade-${grade.toLowerCase()}">${grade}</div>
+                                        </div>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+                ` : ''}
+
+                ${sortedRegularUsers.length === 0 && sortedSummativeUsers.length === 0 ? `
+                    <div class="no-data-message">
+                        <p>No quiz attempts yet for ${subject.charAt(0).toUpperCase() + subject.slice(1)}.</p>
+                    </div>
+                ` : ''}
+            `;
+
+            // Add styles for the new elements
+            const style = document.createElement('style');
+            style.textContent = `
+                .section-title {
+                    color: white;
+                    font-family: 'Bagel Fat One';
+                    font-size: 1.8rem;
+                    margin: 40px 0 20px;
+                    font-weight: 100;
+                    text-align: center;
+                }
+
+                .score-grade {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: flex-end;
+                    gap: 5px;
+                    padding-left: 30px;
+                    border-left: 2px solid rgba(255, 255, 255, 0.2);
+                }
+
+                .grade {
+                    font-size: 1.2rem;
+                    font-weight: bold;
+                }
+
+                .grade-a { color: #4CAF50; }
+                .grade-b { color: #8BC34A; }
+                .grade-c { color: #FFC107; }
+                .grade-d { color: #FF9800; }
+                .grade-f { color: #f44336; }
+
+                .leaderboard-list + .section-title {
+                    margin-top: 60px;
+                }
+            `;
+            document.head.appendChild(style);
+        }
+
+        function formatTime(seconds) {
+            const min = String(Math.floor(seconds / 60)).padStart(2, '0');
+            const sec = String(seconds % 60).padStart(2, '0');
+            return `${min}:${sec}`;
+        }
+
+        // Show English leaderboard by default
+        document.addEventListener('DOMContentLoaded', () => {
+            showSubject('english');
+        });
+    </script>
+</body>
+</html>

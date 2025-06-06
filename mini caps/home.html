@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link href='https://fonts.googleapis.com/css?family=Bagel Fat One' rel='stylesheet'>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Questify</title>
+    <link rel="stylesheet" href="common.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(180deg, #4B0082, #800080);
+            color: rgb(255, 255, 255);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-image: url("bg3.png");
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+            width: 100%;
+            background-color: black;
+            position: relative;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-image: url("bg3.png");
+            background-size: cover;
+            background-position: center;
+            padding: 20px;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            transition: all 0.3s ease;
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .sidebar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.521);
+            z-index: -1;
+        }
+
+        .sidebar h2 {
+            text-align: center;
+            color: white;
+            font-family: 'Bagel Fat One';
+            font-size: 2.5rem;
+            font-weight: 100;
+            margin: 0 0 20px 0;
+            width: 100%;
+            position: relative;
+            z-index: 1;
+        }
+
+        .sidebar ul {
+            list-style-type: none;
+            padding: 0;
+            margin-bottom: auto;
+            width: 100%;
+            position: relative;
+            z-index: 1;
+        }
+
+        .sidebar ul li {
+            margin: 10px 0;
+            width: 100%;
+        }
+
+        .sidebar ul li a {
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            width: 100%;
+            box-sizing: border-box;
+            font-size: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sidebar ul li a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255, 255, 255, 0.2),
+                transparent
+            );
+            transition: 0.5s;
+        }
+
+        .sidebar ul li a:hover::before {
+            left: 100%;
+        }
+
+        .sidebar ul li a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(8px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .sidebar ul li a.active {
+            background: rgba(255, 255, 255, 0.2);
+            border-left: 4px solid white;
+        }
+
+        .sidebar ul li a.active:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        .sidebar ul li a i {
+            margin-right: 15px;
+            font-size: 1.2rem;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar ul li a:hover i {
+            transform: scale(1.2);
+        }
+
+        .sidebar .bottom-links {
+            margin-top: auto;
+            padding-bottom: 10px;
+            width: 100%;
+        }
+
+        .sidebar .bottom-links li a {
+            background-color: rgba(255, 255, 255, 0.1);
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar .bottom-links li a:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px);
+        }
+
+        /* Menu Toggle Button */
+        .menu-toggle {
+            display: none;
+            position: fixed;
+            top: 20px;
+            left: -400px;
+            background: none;
+            border: none;
+            color: white;
+            padding: 10px;
+            cursor: pointer;
+            z-index: 1001;
+            font-size: 24px;
+        }
+
+        .menu-toggle i {
+            display: block;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            background-color: black;
+            margin-left: 250px;
+            min-height: 100vh;
+            transition: margin-left 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #2E073F;
+        }
+
+        .glass-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(123, 123, 128, 0.37);
+            padding: 30px;
+            width: 70%;
+            max-width: 600px;
+            margin: 0;
+        }
+
+        .welcome-container {
+            text-align: center;
+            padding: 15px;
+        }
+
+        .welcome-container h1 {
+            color: white;
+            font-family: 'Bagel Fat One';
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            font-weight: 100;
+        }
+
+        .welcome-container p {
+            color: white;
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .start-quiz {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            padding: 15px 30px;
+            margin: 12px 0;
+            text-decoration: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .start-quiz:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        @media screen and (max-width: 768px) {
+            .menu-toggle {
+                display: block;
+            }
+
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 15px;
+            }
+
+            .glass-container {
+                padding: 20px;
+                width: 90%;
+            }
+
+            .welcome-container h1 {
+                font-size: 2rem;
+                margin-bottom: 25px;
+            }
+
+            .welcome-container p {
+                font-size: 1rem;
+                margin-bottom: 25px;
+            }
+
+            .start-quiz {
+                padding: 12px 24px;
+                font-size: 1rem;
+            }
+        }
+
+        @media screen and (max-width: 480px) {
+            .sidebar {
+                padding: 15px;
+                max-width: 100%;
+            }
+
+            .sidebar h2 {
+                font-size: 2rem;
+            }
+
+            .sidebar ul li a {
+                padding: 10px;
+                font-size: 0.9rem;
+            }
+
+            .sidebar ul li a i {
+                font-size: 1rem;
+                margin-right: 10px;
+            }
+
+            .welcome-container h1 {
+                font-size: 1.5rem;
+                margin-bottom: 20px;
+            }
+
+            .welcome-container p {
+                font-size: 0.9rem;
+                margin-bottom: 20px;
+            }
+
+            .start-quiz {
+                padding: 10px 20px;
+                width: 80%;
+            }
+        }
+
+        /* Logout Modal Styles */
+        .logout-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .logout-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            padding: 30px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            color: white;
+        }
+
+        .logout-container h2 {
+            font-family: 'Bagel Fat One';
+            font-size: 2rem;
+            margin-bottom: 20px;
+            font-weight: 100;
+        }
+
+        .logout-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .logout-btn {
+            padding: 10px 25px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .confirm-btn {
+            background-color: #E0BBE4;
+            color: #4A148C;
+        }
+
+        .cancel-btn {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .logout-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Loading Animation */
+        .loading-spinner {
+            display: none;
+            margin: 20px auto;
+        }
+
+        .loading-spinner div {
+            width: 10px;
+            height: 10px;
+            background-color: white;
+            border-radius: 50%;
+            display: inline-block;
+            margin: 0 3px;
+            animation: bounce 0.5s infinite alternate;
+        }
+
+        .loading-spinner div:nth-child(2) {
+            animation-delay: 0.1s;
+        }
+
+        .loading-spinner div:nth-child(3) {
+            animation-delay: 0.2s;
+        }
+
+        @keyframes bounce {
+            to {
+                transform: translateY(-10px);
+            }
+        }
+
+        .success-message {
+            display: none;
+            color: #4BB543;
+            margin: 20px 0;
+            font-size: 1.1rem;
+        }
+
+        .user-welcome {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .user-welcome h2 {
+            color: white;
+            font-size: 1.8rem;
+            margin: 0 0 10px 0;
+            font-family: 'Bagel Fat One';
+            font-weight: 100;
+        }
+
+        .user-welcome p {
+            color: rgba(255, 255, 255, 0.8);
+            margin: 5px 0;
+            font-size: 1.1rem;
+        }
+
+        .sign-in-link {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .sign-in-link:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <button class="menu-toggle" id="menuToggle">
+            <i class="fas fa-bars"></i>
+        </button>
+        <div class="sidebar" id="sidebar">
+            <h2>Questify</h2>
+            <ul>
+                <li><a href="home.html" class="active"><i class="fas fa-home"></i>Home</a></li>
+                <li><a href="category.html"><i class="fas fa-th-large"></i>Category</a></li>
+                <li><a href="leaderboard.html"><i class="fas fa-chart-bar"></i>Leaderboard</a></li>
+                <li><a href="profile.html"><i class="fas fa-user"></i>Profile</a></li>
+            </ul>
+            <ul class="bottom-links">
+                <li><a href="#"><i class="fas fa-cog"></i>Settings</a></li>
+                <li><a href="#" onclick="confirmLogout(); return false;"><i class="fas fa-sign-out-alt"></i>Log out</a></li>
+            </ul>
+        </div>
+        <div class="main-content">
+            <div class="glass-container">
+                <div class="welcome-container">
+                    <div id="userWelcome"></div>
+                    <p>Challenge yourself with our fun quiz questions and see how many you can get right!</p>
+                    <a href="category.html" class="start-quiz">Start Quiz</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Logout Modal -->
+    <div class="logout-modal" id="logoutModal">
+        <div class="logout-container">
+            <h2>Logout Confirmation</h2>
+            <p>Are you sure you want to log out?</p>
+            <div class="loading-spinner" id="loadingSpinner">
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
+            <div class="success-message" id="successMessage">
+                Successfully logged out!
+            </div>
+            <div class="logout-buttons" id="logoutButtons">
+                <button class="logout-btn confirm-btn" onclick="proceedLogout()">Yes, Logout</button>
+                <button class="logout-btn cancel-btn" onclick="cancelLogout()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Load and display user information
+        function loadUserInfo() {
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            const userWelcome = document.getElementById('userWelcome');
+            
+            if (currentUser) {
+                userWelcome.innerHTML = `
+                    <h1>Hi ${currentUser.username}, Welcome to Questify!</h1>
+                `;
+            } else {
+                userWelcome.innerHTML = `
+                    <h1>Welcome to Questify</h1>
+                    <div class="user-welcome">
+                        <p>Please sign in to start your quiz journey</p>
+                        <a href="index.html" class="sign-in-link">Sign In</a>
+                    </div>
+                `;
+            }
+        }
+
+        // Call loadUserInfo when page loads
+        document.addEventListener('DOMContentLoaded', loadUserInfo);
+
+        // Add event listener for menu toggle
+        document.getElementById('menuToggle').addEventListener('click', function() {
+            document.getElementById('sidebar').classList.toggle('active');
+        });
+
+        // Close sidebar when clicking outside on mobile
+        document.addEventListener('click', function(event) {
+            const sidebar = document.getElementById('sidebar');
+            const menuToggle = document.getElementById('menuToggle');
+            
+            if (!sidebar.contains(event.target) && !menuToggle.contains(event.target)) {
+                sidebar.classList.remove('active');
+            }
+        });
+
+        // Update logout function to use confirmLogout
+        function confirmLogout() {
+            document.getElementById('logoutModal').style.display = 'flex';
+        }
+
+        function hideLogoutConfirmation() {
+            document.getElementById('logoutModal').style.display = 'none';
+        }
+
+        function logout() {
+            localStorage.removeItem('currentUser');
+            window.location.href = 'index.html';
+        }
+
+        function proceedLogout() {
+            const loadingSpinner = document.getElementById('loadingSpinner');
+            const logoutButtons = document.getElementById('logoutButtons');
+            const successMessage = document.getElementById('successMessage');
+
+            // Hide buttons and show loading
+            logoutButtons.style.display = 'none';
+            loadingSpinner.style.display = 'block';
+
+            // Simulate logout process
+            setTimeout(() => {
+                loadingSpinner.style.display = 'none';
+                successMessage.style.display = 'block';
+
+                // Redirect after showing success message
+                setTimeout(() => {
+                    logout();
+                }, 1500);
+            }, 2000);
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('logoutModal').addEventListener('click', function(event) {
+            if (event.target === this) {
+                hideLogoutConfirmation();
+            }
+        });
+    </script>
+</body>
+</html>

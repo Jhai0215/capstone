@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Retakers</title>
+    <link href='https://fonts.googleapis.com/css?family=Bagel Fat One' rel='stylesheet'>
+    <link rel="stylesheet" href="common.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            background-color: black;
+            min-height: 100vh;
+            margin: 0;
+            overflow-x: hidden;
+            font-family: Arial, sans-serif;
+        }
+
+        html {
+            background-color: black;
+        }
+
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #2E073F;
+        }
+
+        .content-wrapper {
+            width: 90%;
+            max-width: 1200px;
+            margin: 20px auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            width: 100%;
+        }
+
+        .header h1 {
+            color: white;
+            font-family: 'Bagel Fat One';
+            font-size: 2.2rem;
+            font-weight: 100;
+            margin: 0;
+        }
+
+        .retakers-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 25px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            width: 100%;
+            margin-bottom: 30px;
+        }
+
+        .retakers-list {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .retakers-list th {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-weight: 500;
+            padding: 15px;
+            text-align: left;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .retakers-list td {
+            padding: 15px;
+            color: rgba(255, 255, 255, 0.9);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .retakers-list tr:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-button {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+        }
+
+        .action-button:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .approve-button {
+            background: rgba(46, 204, 113, 0.2);
+        }
+
+        .approve-button:hover {
+            background: rgba(46, 204, 113, 0.3);
+        }
+
+        .deny-button {
+            background: rgba(231, 76, 60, 0.2);
+        }
+
+        .deny-button:hover {
+            background: rgba(231, 76, 60, 0.3);
+        }
+
+        .no-retakers-message {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1.1rem;
+            margin: 40px 0;
+            font-style: italic;
+        }
+
+        .search-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .search-container input {
+            flex: 1;
+            padding: 12px 15px;
+            border: none;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1rem;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+        }
+
+        .search-container input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .search-container input:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .search-icon {
+            position: relative;
+            right: 35px;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        @media screen and (max-width: 1200px) {
+            .content-wrapper {
+                width: 95%;
+            }
+        }
+
+        @media screen and (max-width: 768px) {
+            .main-content {
+                margin-left: 0;
+                padding: 15px;
+            }
+
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            .retakers-container {
+                padding: 15px;
+            }
+
+            .retakers-list {
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+
+            .search-container {
+                max-width: 100%;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+                gap: 5px;
+            }
+
+            .action-button {
+                width: 100%;
+            }
+        }
+
+        /* Sidebar navigation styles */
+        .sidebar ul li a {
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            width: 100%;
+            box-sizing: border-box;
+            font-size: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sidebar ul li a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255, 255, 255, 0.2),
+                transparent
+            );
+            transition: 0.5s;
+        }
+
+        .sidebar ul li a:hover::before {
+            left: 100%;
+        }
+
+        .sidebar ul li a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(8px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .sidebar ul li a.active {
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .sidebar ul li a i {
+            margin-right: 15px;
+            font-size: 1.2rem;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar ul li a:hover i {
+            transform: scale(1.2);
+        }
+
+        .sidebar .bottom-links li a {
+            background-color: rgba(255, 255, 255, 0.1);
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar .bottom-links li a:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px);
+        }
+
+        .quarter-link.locked {
+            pointer-events: none;
+            background: rgba(128, 128, 128, 0.3);
+            color: rgba(255, 255, 255, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="sidebar">
+            <h2>Questify</h2>
+            <ul>
+                <li><a href="dashboard.html"><i class="fas fa-home"></i>Dashboard</a></li>
+                <li><a href="studentInfo.html"><i class="fa-solid fa-circle-info"></i>Student Info</a></li>
+                <li><a href="retakers.html" class="active"><i class="fa-solid fa-clock"></i>Retakers</a></li>
+            </ul>
+            <ul class="bottom-links">
+                <li><a href="#"><i class="fas fa-cog"></i>Settings</a></li>
+                <li><a href="index.html"><i class="fas fa-sign-out-alt"></i>Log out</a></li>
+            </ul>
+        </div>
+        <div class="main-content">
+            <div class="content-wrapper">
+                <div class="header">
+                    <h1>Retakers List</h1>
+                    <div class="search-container">
+                        <input type="text" placeholder="Search retakers..." id="searchInput">
+                        <i class="fas fa-search search-icon"></i>
+                    </div>
+                </div>
+                <div class="retakers-container">
+                    <table class="retakers-list">
+                        <thead>
+                            <tr>
+                                <th>Student Name</th>
+                                <th>Subject</th>
+                                <th>Quarter</th>
+                                <th>Previous Score</th>
+                                <th>Request Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="retakersTableBody">
+                            <!-- Table rows will be dynamically added here -->
+                        </tbody>
+                    </table>
+                    <p class="no-retakers-message">No retake requests at the moment.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Function to handle search
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const rows = document.querySelectorAll('#retakersTableBody tr');
+            
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(searchTerm) ? '' : 'none';
+            });
+        });
+
+        // Function to handle approve/deny actions
+        function handleAction(button, action) {
+            const row = button.closest('tr');
+            const studentEmail = row.cells[0].textContent;
+            const subject = row.cells[1].textContent.toLowerCase();
+            const quarter = row.cells[2].textContent.split(' ')[1]; // "Quarter 1" -> "1"
+            
+            if (action === 'approve') {
+                // Set retake approval flag
+                localStorage.setItem(`${subject}_quarter${quarter}_retake_approved_${studentEmail}`, 'true');
+                button.parentElement.innerHTML = 'Approved';
+            } else {
+                button.parentElement.innerHTML = 'Denied';
+            }
+        }
+
+        // Add ripple effect to navigation items
+        document.querySelectorAll('.sidebar ul li a').forEach(link => {
+            link.addEventListener('click', function(e) {
+                const ripple = document.createElement('span');
+                ripple.className = 'ripple';
+                this.appendChild(ripple);
+                
+                const rect = link.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                
+                ripple.style.width = ripple.style.height = `${size}px`;
+                ripple.style.left = `${e.clientX - rect.left - size/2}px`;
+                ripple.style.top = `${e.clientY - rect.top - size/2}px`;
+                
+                ripple.addEventListener('animationend', () => {
+                    ripple.remove();
+                });
+            });
+        });
+
+        // Load retakers data from localStorage
+        function loadRetakersData() {
+            const retakeRequests = JSON.parse(localStorage.getItem('retake_requests')) || [];
+            const tableBody = document.getElementById('retakersTableBody');
+            const noRetakersMessage = document.querySelector('.no-retakers-message');
+            
+            if (retakeRequests.length > 0) {
+                noRetakersMessage.style.display = 'none';
+                tableBody.innerHTML = retakeRequests.map(retaker => `
+                    <tr>
+                        <td>${retaker.userId}</td>
+                        <td>${retaker.subject.charAt(0).toUpperCase() + retaker.subject.slice(1)}</td>
+                        <td>Quarter ${retaker.quarter}</td>
+                        <td>${retaker.previousScore ? retaker.previousScore + '%' : 'N/A'}</td>
+                        <td>${new Date(retaker.date).toLocaleDateString()}</td>
+                        <td class="action-buttons">
+                            <button class="action-button approve-button" onclick="handleAction(this, 'approve')">Approve</button>
+                            <button class="action-button deny-button" onclick="handleAction(this, 'deny')">Deny</button>
+                        </td>
+                    </tr>
+                `).join('');
+            } else {
+                noRetakersMessage.style.display = 'block';
+                tableBody.innerHTML = '';
+            }
+        }
+
+        // Load data when page loads
+        document.addEventListener('DOMContentLoaded', loadRetakersData);
+
+        // Listen for changes in localStorage
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'retake_requests') {
+                loadRetakersData();
+            }
+        });
+
+        function isRetakeApproved(quarterNumber) {
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            if (!currentUser) return false;
+            const userKey = `english_quarter${quarterNumber}_retake_approved_${currentUser.email}`;
+            return localStorage.getItem(userKey) === 'true';
+        }
+
+        function updateQuarterLinks() {
+            const quarters = [
+                { id: 'quarter1-link', number: 1, href: 'quarter1.html' },
+                { id: 'quarter2-link', number: 2, href: 'quarter2.html' },
+                { id: 'quarter3-link', number: 3, href: 'quarter3.html' },
+                { id: 'quarter4-link', number: 4, href: 'quarter4.html' },
+                { id: 'quarter5-link', number: 5, href: 'summative.html' }
+            ];
+
+            quarters.forEach((quarter, index) => {
+                const link = document.getElementById(quarter.id);
+                const completed = isQuarterCompleted(quarter.number);
+                const retakeApproved = isRetakeApproved(quarter.number);
+
+                // First quarter: lock if completed and no retake
+                if (quarter.number === 1) {
+                    if (completed && !retakeApproved) {
+                        link.classList.add('locked');
+                        link.href = '#';
+                        link.tabIndex = -1;
+                        link.innerHTML = `Quarter 1 <i class="fas fa-lock"></i>`;
+                    } else {
+                        link.classList.remove('locked');
+                        link.href = quarter.href;
+                        link.tabIndex = 0;
+                        link.innerHTML = completed ? `Quarter 1 <i class="fas fa-check-circle"></i>` : `Quarter 1`;
+                    }
+                    return;
+                }
+
+                // For other quarters
+                const previousCompleted = isQuarterCompleted(quarter.number - 1);
+
+                if (!previousCompleted) {
+                    link.classList.add('locked');
+                    link.href = '#';
+                    link.tabIndex = -1;
+                    link.innerHTML = `Quarter ${quarter.number} <i class="fas fa-lock"></i>`;
+                } else if (completed && !retakeApproved) {
+                    link.classList.add('locked');
+                    link.href = '#';
+                    link.tabIndex = -1;
+                    link.innerHTML = `Quarter ${quarter.number} <i class="fas fa-lock"></i>`;
+                } else {
+                    link.classList.remove('locked');
+                    link.href = quarter.href;
+                    link.tabIndex = 0;
+                    link.innerHTML = completed ? `Quarter ${quarter.number} <i class="fas fa-check-circle"></i>` : `Quarter ${quarter.number}`;
+                }
+            });
+
+            // Handle summative separately
+            const summativeLink = document.getElementById('quarter5-link');
+            const allQuartersCompleted = [1, 2, 3, 4].every(num => isQuarterCompleted(num));
+            if (!allQuartersCompleted) {
+                summativeLink.classList.add('locked');
+                summativeLink.href = '#';
+                summativeLink.tabIndex = -1;
+                summativeLink.innerHTML = `Summative <i class="fas fa-lock"></i>`;
+            } else {
+                summativeLink.classList.remove('locked');
+                summativeLink.href = 'summative.html';
+                summativeLink.tabIndex = 0;
+                const summativeCompleted = isQuarterCompleted(5);
+                if (summativeCompleted) {
+                    summativeLink.innerHTML = `Summative <i class="fas fa-graduation-cap"></i>`;
+                } else {
+                    summativeLink.innerHTML = 'Summative';
+                }
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', updateQuarterLinks);
+    </script>
+</body>
+</html> 
